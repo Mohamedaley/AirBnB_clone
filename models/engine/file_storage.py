@@ -39,7 +39,6 @@ class FileStorage:
                     cls_name = key.split('.')[0]
                     if cls_name == 'BaseModel':
                         obj = BaseModel(**value)
-                    # Add similar conditionals for other classes as needed
                     FileStorage.__objects[key] = obj
         except FileNotFoundError:
             pass
