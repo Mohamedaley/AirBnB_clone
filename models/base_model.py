@@ -9,8 +9,8 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """The initialization method"""
         self.id = str(uuid4())
-        self.created_at = datetime.strptime(datetime.today())
-        self.updated_at = datetime.strptime(datetime.today())
+        self.created_at = datetime.today()
+        self.updated_at = datetime.today()
 
         if kwargs:
             for key, value in kwargs.items():
@@ -32,6 +32,7 @@ class BaseModel:
         by making a copy of __dict__ using {**self}"""
 
         temp = self.__dict__.copy()
+        temp[__class__] = type(self).__name__
         temp["created_at"] = self.created_at.isoformat()
         temp["updated_at"] = self.updated_at.isoformat()
         return temp
