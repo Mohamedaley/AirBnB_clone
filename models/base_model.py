@@ -9,8 +9,8 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """The initialization method"""
         self.id = str(uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
+        self.created_at = datetime.strptime(datetime.today())
+        self.updated_at = datetime.strptime(datetime.today())
 
         if kwargs:
             for key, value in kwargs.items():
@@ -38,5 +38,6 @@ class BaseModel:
 
     def __str__(self):
         """overriding the __str__ method to print specific format"""
+
         return "[{}] ({}) {}".format(type(self).
                                      __name__, self.id, self.__dict__)
