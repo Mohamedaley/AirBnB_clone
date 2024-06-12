@@ -18,6 +18,7 @@ class BaseModel:
                     kwargs['created_at'], "%Y-%m-%dT%H:%M:%S.%f")
                 self.updated_at = datetime.strptime(
                     kwargs['updated_at'], "%Y-%m-%dT%H:%M:%S.%f")
+            return
         self.id = str(uuid4())
         self.created_at = datetime.today()
         self.updated_at = datetime.today()
