@@ -8,9 +8,6 @@ class BaseModel:
     """The base model class is the main class"""
     def __init__(self, *args, **kwargs):
         """The initialization method"""
-        self.id = str(uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
 
         if kwargs:
             for key, value in kwargs.items():
@@ -21,6 +18,9 @@ class BaseModel:
                         kwargs['created_at'], "%Y-%m-%dT%H:%M:%S.%f")
                     self.updated_at = datetime.strptime(
                         kwargs['updated_at'], "%Y-%m-%dT%H:%M:%S.%f")
+        self.id = str(uuid4())
+        self.created_at = datetime.today()
+        self.updated_at = datetime.today()
 
     def save(self):
         """Update the time of instance creation"""
