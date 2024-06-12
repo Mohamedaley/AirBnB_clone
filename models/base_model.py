@@ -32,7 +32,6 @@ class BaseModel:
         by making a copy of __dict__ using {**self}"""
 
         temp = self.__dict__.copy()
-        temp[__class__] = type(self).__name__
         temp["created_at"] = self.created_at.isoformat()
         temp["updated_at"] = self.updated_at.isoformat()
         return temp
