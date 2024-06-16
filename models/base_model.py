@@ -1,45 +1,31 @@
-#!/usr/bin/python3
+import uuid
 from datetime import datetime
-from uuid import uuid4
 import models
 
-
 class BaseModel:
-    """The base model class is the main class"""
     def __init__(self, *args, **kwargs):
-        """The initialization method"""
-
         if kwargs:
             for key, value in kwargs.items():
-                if key == __class__:
-                    continue
-                setattr(self, key, value)
-            if "created_at" or "updated_at" in kwargs.keys():
-                self.created_at = datetime.strptime(
-                    kwargs['created_at'], "%Y-%m-%dT%H:%M:%S.%f")
-                self.updated_at = datetime.strptime(
-                    kwargs['updated_at'], "%Y-%m-%dT%H:%M:%S.%f")
-        else :
-            self.id = str(uuid4())
-            self.created_at = datetime.today()
-            self.updated_at = datetime.today()
-
-    def save(self):
-        """Update the time of instance creation"""
-
-        self.updated_at = datetime.today()
-
-    def to_dict(self):
-        """A function to collect the needed data and put them into dic
-        by making a copy of __dict__ using {**self}"""
-
-        temp = self.__dict__.copy()
-        temp["created_at"] = self.created_at.isoformat()
-        temp["updated_at"] = self.updated_at.isoformat()
-        return temp
+                if key != "__class__":
+                    if key in ["created_at", "updated_at"]:
+                        value = datetime.fromisoformat(value)
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
-        """overriding the __str__ method to print specific format"""
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
-        return "[{}] ({}) {}".format(type(self).
-                                     __name__, self.id, self.__dict__)
+    def save(self):
+        self.updated_at = datetime.now()
+        models.storage.save()
+
+    def to_dict(self):
+        my_dict = self.__dict__.copy()
+        my_dict["__class__"] = self.__class__.__name__
+        my_dict["created_at"] = self.created_at.isoformat()
+        my_dict["updated_at"] = self.updated_at.isoformat()
+        return my_dict

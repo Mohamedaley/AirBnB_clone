@@ -1,46 +1,31 @@
-#!/usr/bin/python3
 import json
+import os
 from models.base_model import BaseModel
 
 class FileStorage:
-    """The storage engine in AirBnB project"""
-
-    __file_path: str = "file.json"
-    __objects: dict = {}
-
-    def __init__(self):
-        """The initialization method (Constructor)"""
-        pass
+    __file_path = 'file.json'
+    __objects = {}
 
     def all(self):
-        """Return the dictionary objects"""
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
-        """Sets in the __objects dictionary"""
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.__objects[key] = obj
+        key = f"{obj.__class__.__name__}.{obj.id}"
+        self.__objects[key] = obj
 
     def save(self):
-        """Serializes objects stored and persists in file"""
-        temp = {}
-        for key, obj in FileStorage.__objects.items():
-            temp[key] = obj.to_dict()
-        with open(FileStorage.__file_path, "w") as json_file:
-            json.dump(temp, json_file)
+        with open(self.__file_path, 'w') as f:
+            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, f)
 
     def reload(self):
-        """This method will deserialize the JSON
-        string to a Python dictionary"""
-        try:
-            with open(FileStorage.__file_path, 'r', encoding="UTF-8") as f:
-                new_obj_dict = json.load(f)
-                for key, value in new_obj_dict.items():
-                    cls_name = key.split('.')[0]
-                    if cls_name == 'BaseModel':
-                        obj = BaseModel(**value)
-                    FileStorage.__objects[key] = obj
-        except FileNotFoundError:
-            pass
-        except json.JSONDecodeError:
-            pass
+        if os.path.exists(self.__file_path):
+            with open(self.__file_path, 'r') as f:
+                try:
+                    objs = json.load(f)
+                    for key, value in objs.items():
+                        cls_name = key.split('.')[0]
+                        cls = globals().get(cls_name)
+                        if cls:
+                            self.__objects[key] = cls(**value)
+                except json.JSONDecodeError:
+                    pass
