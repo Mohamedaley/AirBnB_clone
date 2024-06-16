@@ -2,6 +2,7 @@ import json
 import os
 from models.base_model import BaseModel
 
+
 class FileStorage:
     __file_path = 'file.json'
     __objects = {}
@@ -15,7 +16,8 @@ class FileStorage:
 
     def save(self):
         with open(self.__file_path, 'w') as f:
-            json.dump({key: obj.to_dict() for key, obj in self.__objects.items()}, f)
+            json.dump({key: obj.to_dict() for
+                       key, obj in self.__objects.items()}, f)
 
     def reload(self):
         if os.path.exists(self.__file_path):
