@@ -110,7 +110,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print([str(obj) for obj in models.storage.all().values()
                    if arg[0] == obj.__class__.__name__])
-        
+
     def do_update(self, arg):
         arg = arg.split()
         if len(arg) == 0:
